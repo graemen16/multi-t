@@ -7,7 +7,9 @@ export const config = {
 };
 export default async function middleware(req: NextRequest) {
 	const url = req.nextUrl;
-	const hostname = req.headers.get('host');
+	//const hostname = req.headers.get('host');
+	// Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
+	let hostname = req.headers.get('host')!.replace('.localhost:3000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
 
 	// Define los dominios permitidos (localhost y dominio para producción)
 	// Define allowed Domains (localhost and production domain)
