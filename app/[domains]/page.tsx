@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Page({ params }: { params: { domains: string } }) {
 	return (
 		<div>
-			<div>We're here: {params.domains} </div>
+			<div>Hello: {params.domains} </div>
 			<div>Subdomain: {params.domains.split('.')[0]}</div>
 			<div>
 				<Link href={'/route1'}>Route 1</Link>
