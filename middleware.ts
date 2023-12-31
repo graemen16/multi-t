@@ -2,10 +2,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import subdomains from './subdomains.json';
 
+import NextAuth from 'next-auth';
+import { authConfig } from './auth.config';
+
+export default NextAuth(authConfig).auth;
+
+/*
+export const config = {
+	// https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
+	matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+};
+*/
 export const config = {
 	matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)'],
 };
-export default async function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
 	const url = req.nextUrl;
 	//const hostname = req.headers.get('host');
 	// Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
@@ -26,11 +37,12 @@ export default async function middleware(req: NextRequest) {
 	// Si estamos en un dominio habilitado y no es un subdominio, permitimos la solicitud.
 	// If we stay in a allowed domain and its not a subdomain, allow the request.
 	if (isAllowedDomain && !subdomains.some((d) => d.subdomain === subdomain)) {
+		console.log('isAllowedDomain && !subdomains.some((d) => d.subdomain === subdomain)');
 		return NextResponse.next();
 	}
 
 	const subdomainData = subdomains.find((d) => d.subdomain === subdomain);
-	/*
+
 	if (subdomainData) {
 		// Rewrite the URL in the dynamic route based in the subdomain
 		// Reescribe la URL a una ruta dinámica basada en el subdominio
@@ -39,7 +51,7 @@ export default async function middleware(req: NextRequest) {
 
 	return new Response(null, { status: 404 });
 }
-*/
+/*
 
 	const searchParams = req.nextUrl.searchParams.toString();
 	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
@@ -52,3 +64,4 @@ export default async function middleware(req: NextRequest) {
 	// rewrite everything else to `/[domain]/[slug] dynamic route
 	return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
+*/
