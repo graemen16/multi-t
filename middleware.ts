@@ -36,7 +36,7 @@ export async function middleware(req: NextRequest) {
 
 	// Si estamos en un dominio habilitado y no es un subdominio, permitimos la solicitud.
 	// If we stay in a allowed domain and its not a subdomain, allow the request.
-	if (isAllowedDomain && !subdomains.some((d) => d.subdomain === subdomain)) {
+	if (isAllowedDomain && (!subdomains.some((d) => d.subdomain === subdomain) || subdomain === 'www')) {
 		console.log('isAllowedDomain && !subdomains.some((d) => d.subdomain === subdomain)');
 		return NextResponse.next();
 	}
