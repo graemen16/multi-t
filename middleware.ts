@@ -4,8 +4,11 @@ import subdomains from './subdomains.json';
 
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
+import { auth } from './lib/auth';
 
 export default NextAuth(authConfig).auth;
+
+//export const middleware = auth;
 
 /*
 export const config = {
@@ -16,7 +19,7 @@ export const config = {
 export const config = {
 	matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)'],
 };
-export async function middleware(req: NextRequest) {
+export async function middlewareOld(req: NextRequest) {
 	const url = req.nextUrl;
 	//const hostname = req.headers.get('host');
 	// Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
