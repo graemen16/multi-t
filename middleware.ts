@@ -58,6 +58,10 @@ export async function middleware(req: NextRequest) {
 	return new Response(null, { status: 404 });
 	*/
 
+	if (!subdomainData) {
+		return new Response(null, { status: 404 });
+	}
+
 	const searchParams = req.nextUrl.searchParams.toString();
 	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
 	const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
