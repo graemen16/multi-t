@@ -1,6 +1,7 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthConfig, User } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
-
+import CredentialsProvider from 'next-auth/providers/credentials';
+const useSecureCookies = !!process.env.VERCEL_URL;
 export const authConfig = {
 	pages: {},
 	callbacks: {
@@ -22,5 +23,80 @@ export const authConfig = {
 			clientId: process.env.GITHUB_ID,
 			clientSecret: process.env.GITHUB_SECRET,
 		}),
+		CredentialsProvider({
+			// The name to display on the sign in form (e.g. 'Sign in with...')
+			name: 'Testing',
+			// The credentials is used to generate a suitable form on the sign in page.
+			// You can specify whatever fields you are expecting to be submitted.
+			// e.g. domain, username, password, 2FA token, etc.
+			// You can pass any HTML attribute to the <input> tag through the object.
+			credentials: {
+				username: { label: 'Username', type: 'text', placeholder: 'jsmith' },
+				password: { label: 'Password', type: 'password' },
+			},
+			async authorize(credentials, req) {
+				// You need to provide your own logic here that takes the credentials
+				// submitted and returns either a object representing a user or value
+				// that is false/null if the credentials are invalid.
+				// e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
+				// You can also use the `req` object to obtain additional parameters
+				// (i.e., the request IP address)
+				console.log('credentials', credentials);
+				async function checkUser(credentials: any): Promise<User | null> {
+					if (
+						process.env.NODE_ENV === 'development' &&
+						credentials?.username === 'gv' &&
+						credentials?.password === 'gv'
+					) {
+						const user: User = { id: '1', name: 'J Smith', email: 'js@gv.com' };
+						return user;
+					}
+					if (
+						process.env.NODE_ENV === 'development' &&
+						credentials?.username === 'gn' &&
+						credentials?.password === '123'
+					) {
+						const user: User = {
+							id: 'a',
+							name: 'Graeme N Test',
+							email: 'graemen16@gmail.com',
+						};
+						return user;
+					}
+					return null;
+				}
+				const user = await checkUser(credentials);
+				/*
+        const res = await fetch("/your/endpoint", {
+          method: "POST",
+          body: JSON.stringify(credentials),
+          headers: { "Content-Type": "application/json" },
+        })
+        
+        const user = await res.json()
+
+        // If no error and we have user data, return it
+        if (res.ok && user) {
+          return user
+        }
+        */
+				// Return null if user data could not be retrieved
+				return user;
+			},
+		}),
 	], // Add providers with an empty array for now
+	/*
+	cookies: {
+		sessionToken: {
+			name: `${useSecureCookies ? '__Secure-' : ''}next-auth.session-token`,
+			options: {
+				httpOnly: true,
+				sameSite: 'lax',
+				path: '/',
+				domain: '.localtest.me',
+				secure: useSecureCookies,
+			},
+		},
+	},
+	*/
 } satisfies NextAuthConfig;

@@ -6,20 +6,20 @@ import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
 import { auth } from './lib/auth';
 
-export default NextAuth(authConfig).auth;
+//export default NextAuth(authConfig).auth;
 
-//export const middleware = auth;
-
-/*
 export const config = {
 	// https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
 	matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 };
-*/
+/*
 export const config = {
 	matcher: ['/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)'],
 };
-export async function middlewareOld(req: NextRequest) {
+*/
+//export default NextAuth(authConfig).auth;
+
+export async function middleware(req: NextRequest) {
 	const url = req.nextUrl;
 	//const hostname = req.headers.get('host');
 	// Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
@@ -45,7 +45,10 @@ export async function middlewareOld(req: NextRequest) {
 	}
 
 	const subdomainData = subdomains.find((d) => d.subdomain === subdomain);
+	console.log('subdomainData', subdomainData);
 
+	//return NextResponse.next();
+	/*
 	//if (subdomainData) {
 	// Rewrite the URL in the dynamic route based in the subdomain
 	// Reescribe la URL a una ruta dinámica basada en el subdominio
@@ -53,8 +56,7 @@ export async function middlewareOld(req: NextRequest) {
 	//}
 
 	return new Response(null, { status: 404 });
-}
-/*
+	*/
 
 	const searchParams = req.nextUrl.searchParams.toString();
 	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
@@ -67,4 +69,3 @@ export async function middlewareOld(req: NextRequest) {
 	// rewrite everything else to `/[domain]/[slug] dynamic route
 	return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
-*/
