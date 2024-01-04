@@ -4,7 +4,7 @@ import subdomains from './subdomains.json';
 
 export const config = {
 	// https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-	matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+	matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\.png$).*)'],
 };
 
 export async function middleware(req: NextRequest) {
@@ -44,7 +44,7 @@ export async function middleware(req: NextRequest) {
 	if (!subdomainData) {
 		return new Response(null, { status: 404 });
 	}
-
+	//return NextResponse.next();
 	const searchParams = req.nextUrl.searchParams.toString();
 	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
 	const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
@@ -57,7 +57,8 @@ export async function middleware(req: NextRequest) {
 	*/
 
 	// rewrite everything else to `/[domain]/[slug] dynamic route
+
 	const newUrl = new URL(`/${hostname}${path}`, req.url);
-	console.log('newUrl', newUrl.toString());
+	console.log('newUrl', newUrl.toJSON());
 	return NextResponse.rewrite(newUrl);
 }
