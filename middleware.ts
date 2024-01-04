@@ -9,13 +9,19 @@ export const config = {
 
 export async function middleware(req: NextRequest) {
 	const url = req.nextUrl;
+	console.log('--');
+	console.log('middleware url:', url.toJSON());
 	//const hostname = req.headers.get('host');
 	// Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
-	let hostname = req.headers.get('host')!.replace('.localhost:3000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
-
+	let hostname = req.headers.get('host');
+	console.log('req.headers.get("host")', req.headers.get('host'));
+	if (process.env.NEXT_PUBLIC_ROOT_DOMAIN) {
+		hostname = req.headers.get('host')!.replace('.localtest.me:3000', `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
+	}
+	console.log('hostname', hostname);
 	// Define los dominios permitidos (localhost y dominio para producción)
 	// Define allowed Domains (localhost and production domain)
-	const allowedDomains = ['localhost:3000', 'e2e-ipgn.com'];
+	const allowedDomains = ['localtest.me:3000', 'localhost:3000', 'e2e-ipgn.com'];
 
 	// Verificamos si el hostname existe en los dominios permitidos
 	// Verify if hostname exist in allowed domains
@@ -42,6 +48,7 @@ export async function middleware(req: NextRequest) {
 	const searchParams = req.nextUrl.searchParams.toString();
 	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
 	const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
+	console.log('path:', path, url.pathname, searchParams);
 	/*
 	// rewrite root application to `/home` folder
 	if (hostname === 'localhost:3000' || hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN) {
@@ -50,5 +57,7 @@ export async function middleware(req: NextRequest) {
 	*/
 
 	// rewrite everything else to `/[domain]/[slug] dynamic route
-	return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
+	const newUrl = new URL(`/${hostname}${path}`, req.url);
+	console.log('newUrl', newUrl.toString());
+	return NextResponse.rewrite(newUrl);
 }
