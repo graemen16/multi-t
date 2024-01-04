@@ -59,6 +59,8 @@ export async function middleware(req: NextRequest) {
 	// rewrite everything else to `/[domain]/[slug] dynamic route
 
 	const newUrl = new URL(`/${hostname}${path}`, req.url);
+	// gives URL that doesn't look right, but local env doesn't work without it - why?
 	console.log('newUrl', newUrl.toJSON());
-	return NextResponse.rewrite(newUrl);
+	//return NextResponse.rewrite(newUrl);
+	//return NextResponse.next();
 }
