@@ -21,7 +21,7 @@ export async function middleware(req: NextRequest) {
 	console.log('hostname', hostname);
 	// Define los dominios permitidos (localhost y dominio para producción)
 	// Define allowed Domains (localhost and production domain)
-	const allowedDomains = ['localtest.me:3000', 'localhost:3000', 'e2e-ipgn.com'];
+	const allowedDomains = ['localtest.me', 'localhost', 'e2e-ipgn.com'];
 
 	// Verificamos si el hostname existe en los dominios permitidos
 	// Verify if hostname exist in allowed domains
