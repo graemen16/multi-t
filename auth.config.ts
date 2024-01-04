@@ -83,7 +83,7 @@ export const authConfig = {
 			},
 		}),
 	], // Add providers with an empty array for now
-
+	/*
 	cookies: {
 		sessionToken: {
 			name: `${useSecureCookies ? '__Secure-' : ''}next-auth.session-token`,
@@ -91,9 +91,10 @@ export const authConfig = {
 				httpOnly: true,
 				sameSite: 'lax',
 				path: '/',
-				domain: '.localtest.me',
+				domain: hostName == 'localhost' ? hostName : '.' + rootDomain, // add a . in front so that subdomains are included //'.localtest.me',
 				secure: useSecureCookies,
 			},
 		},
 	},
+	*/
 } satisfies NextAuthConfig;
