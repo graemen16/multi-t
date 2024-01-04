@@ -1,7 +1,7 @@
 import type { NextAuthConfig, User } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-const useSecureCookies = !!process.env.VERCEL_URL;
+const useSecureCookies = true; //process.env.NEXTAUTH_URL!.startsWith('https://');
 export const authConfig = {
 	pages: {},
 	callbacks: {
@@ -17,12 +17,23 @@ export const authConfig = {
 			}
 			return true;
 		},
+		async redirect({ url, baseUrl }) {
+			// Allows relative callback URLs
+			console.log('url, baseUrl', url, baseUrl);
+			/*
+			if (url.startsWith('/')) return `${baseUrl}${url}`;
+			// Allows callback URLs on the same origin
+			else if (new URL(url).origin === baseUrl) return url;
+			*/
+			return url;
+		},
 	},
 	providers: [
 		GithubProvider({
 			clientId: process.env.GITHUB_ID,
 			clientSecret: process.env.GITHUB_SECRET,
 		}),
+
 		CredentialsProvider({
 			// The name to display on the sign in form (e.g. 'Sign in with...')
 			name: 'Testing',
@@ -66,26 +77,13 @@ export const authConfig = {
 					return null;
 				}
 				const user = await checkUser(credentials);
-				/*
-        const res = await fetch("/your/endpoint", {
-          method: "POST",
-          body: JSON.stringify(credentials),
-          headers: { "Content-Type": "application/json" },
-        })
-        
-        const user = await res.json()
 
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user
-        }
-        */
 				// Return null if user data could not be retrieved
 				return user;
 			},
 		}),
 	], // Add providers with an empty array for now
-	/*
+
 	cookies: {
 		sessionToken: {
 			name: `${useSecureCookies ? '__Secure-' : ''}next-auth.session-token`,
@@ -98,5 +96,4 @@ export const authConfig = {
 			},
 		},
 	},
-	*/
 } satisfies NextAuthConfig;
