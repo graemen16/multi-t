@@ -61,6 +61,5 @@ export async function middleware(req: NextRequest) {
 	const newUrl = new URL(`/${hostname}${path}`, req.url);
 	// gives URL that doesn't look right, but local env doesn't work without it - why?
 	console.log('newUrl', newUrl.toJSON());
-	//return NextResponse.rewrite(newUrl);
-	//return NextResponse.next();
+	return NextResponse.rewrite(newUrl);
 }
