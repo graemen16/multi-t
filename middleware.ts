@@ -35,6 +35,19 @@ export async function middleware(req: NextRequest) {
 	// Extraemos el posible subdominio en la URL
 	// Extract the possible subdomain in the URL
 	const subdomain = hostname?.split('.')[0];
+	console.log('subdomain', subdomain);
+
+	const searchParams = url.searchParams.toString();
+	console.log('searchParams', url.searchParams);
+
+	const subdomainData = subdomains.find((d) => d.subdomain === subdomain);
+	console.log('subdomainData', subdomainData);
+
+	//return NextResponse.next();
+
+	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
+	const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
+	console.log('path:', path, url.pathname, searchParams);
 
 	// Si estamos en un dominio habilitado y no es un subdominio, permitimos la solicitud.
 	// If we stay in a allowed domain and its not a subdomain, allow the request.
@@ -43,18 +56,9 @@ export async function middleware(req: NextRequest) {
 		return NextResponse.next();
 	}
 
-	const subdomainData = subdomains.find((d) => d.subdomain === subdomain);
-	console.log('subdomainData', subdomainData);
-
 	if (!subdomainData) {
 		return new Response(null, { status: 404 });
 	}
-	//return NextResponse.next();
-	const searchParams = req.nextUrl.searchParams.toString();
-	// Get the pathname of the request (e.g. /, /about, /blog/first-post)
-	const path = `${url.pathname}${searchParams.length > 0 ? `?${searchParams}` : ''}`;
-	console.log('path:', path, url.pathname, searchParams);
-
 	// rewrite everything else
 	const newUrl = new URL(`/${hostname}${path}`, req.url);
 	// gives URL that doesn't look right, but local env doesn't work without it - why?
