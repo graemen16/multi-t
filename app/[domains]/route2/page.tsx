@@ -1,13 +1,13 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+//import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import React from 'react';
 
 export default function Page({ params }: { params: { domains: string } }) {
 	// get from data route
 	const [data, setData] = React.useState<any>(null);
-	const session = useSession();
+	//const session = useSession();
 	React.useEffect(() => {
 		console.log('fetching data');
 		const fetchData = async () => {
@@ -24,7 +24,6 @@ export default function Page({ params }: { params: { domains: string } }) {
 			<div>
 				<div>Route 2 (Client component): {params.domains}</div>
 				<div>Data: {data}</div>
-				<div>Session: {JSON.stringify(session)}</div>
 				<Link href={'/'}>Home</Link>{' '}
 			</div>
 		</>

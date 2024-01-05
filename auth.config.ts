@@ -1,7 +1,8 @@
 import type { NextAuthConfig, User } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-const useSecureCookies = true; //process.env.NEXTAUTH_URL!.startsWith('https://');
+
+const useSecureCookies = process.env.NEXTAUTH_URL!.startsWith('https://');
 export const authConfig = {
 	pages: {},
 	callbacks: {
@@ -91,7 +92,7 @@ export const authConfig = {
 				httpOnly: true,
 				sameSite: 'lax',
 				path: '/',
-				domain: hostName == 'localhost' ? hostName : '.' + rootDomain, // add a . in front so that subdomains are included //'.localtest.me',
+				domain: '.localtest.me', //hostName == 'localhost' ? hostName : '.' + rootDomain, // add a . in front so that subdomains are included //
 				secure: useSecureCookies,
 			},
 		},
